@@ -44,10 +44,12 @@ tasks.named('processResources') {
     from('web') { into 'web' }
 }
 
+def runtimeJvmArgs = ['-Dfile.encoding=UTF-8', '-XX:+UseG1GC', '-XX:MaxRAMPercentage=50', '-Xss2m']
+
 application {
     mainClass = 'darkbook.DarkBookLauncher'
     applicationName = 'DarkBookAI'
-    applicationDefaultJvmArgs = ['-Dfile.encoding=UTF-8']
+    applicationDefaultJvmArgs = runtimeJvmArgs
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -76,6 +78,11 @@ tasks.register('packageDarkBook', Exec) {
                 '--type', 'app-image', '--name', 'DarkBookAI', '--input', appDir,
                 '--main-jar', "DARK_BOOK_AI-${project.version}.jar",
                 '--main-class', application.mainClass.get(),
+                '--app-version', '1.0',
+                '--vendor', 'Dark Book AI',
+                '--java-options', '-XX:+UseG1GC',
+                '--java-options', '-XX:MaxRAMPercentage=50',
+                '--java-options', '-Dfile.encoding=UTF-8',
                 '--dest', layout.buildDirectory.dir('package').get().asFile
     }
 }

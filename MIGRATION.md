@@ -30,3 +30,24 @@ modelos auxiliares.
 
 Los directorios `build/`, `.gradle/` y `.gradle-user/` son artefactos generados y pueden
 regenerarse; no contienen código fuente del producto.
+
+## Unificación de arquitectura (2026-09-08)
+
+El árbol Java anterior que se había conservado (segunda clase `main`
+`darkbook.DarkBook`, paquetes `core/`, `analysis/`, `collector/`, el bot `TrendScanner`
+con `ScrollEngine`/`VideoObserver`/`VideoPlayer`/`WatchTimer`, los detectores de
+`intelligence/*` salvo `ContentAnalyzer`, los repositorios SQLite legacy
+`DatabaseInitializer`/`AudioRepository`/`HashtagRepository`/`SessionRepository`/
+`StatisticsRepository`/`SearchRepository`/`DatabaseBackup`/`DatabaseMigration`/`QueryUtils`,
+los subpaquetes sin usar `neural.{training,core,inference,memory}`, `models/VideoData`,
+`ui/Dashboard`, `utils/Logger`, `utils/JsonUtils`) estaba **desconectado** de la aplicación
+empaquetada y se eliminó (~75 archivos).
+
+- Se quitó la capa de compatibilidad de `DatabaseManager` (`getConnection`/`closeConnection`)
+  y `VideoRepository.save(VideoData)`. La app usa solo las bases modulares.
+- La capacidad de escaneo real de TikTok se reconstruyó como
+  `darkbook.automation.TikTokFeedVideoSource`, que implementa `darkbook.scanner.VideoSource`
+  y alimenta el pipeline canónico (`knowledge.KnowledgeBuilder.ingest`). Ver README › «Scanner real».
+- `ScannerManager` pasó a un hilo trabajador con reintentos y *backoff*.
+- El `.exe`, cuando corre fuera del árbol del proyecto, escribe `config/`, `database/` y
+  `logs/` en `%LOCALAPPDATA%\DarkBookAI` (Windows) en lugar del directorio de trabajo.

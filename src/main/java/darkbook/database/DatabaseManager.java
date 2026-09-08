@@ -3,7 +3,6 @@ package darkbook.database;
 import darkbook.utils.AppPaths;
 
 import java.nio.file.Path;
-import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -12,7 +11,6 @@ import java.util.Map;
 
 /** Creates isolated SQLite databases and applies idempotent schemas for each storage responsibility. */
 public final class DatabaseManager {
-    private static Connection legacyConnection;
     private final AppPaths paths;
 
     public DatabaseManager(AppPaths paths) { this.paths = paths; }
@@ -79,42 +77,6 @@ public final class DatabaseManager {
             statement.execute("PRAGMA journal_mode=WAL");
         }
         return connection;
-    }
-
-    /**
-     * Compatibility connection for the scanner created before the storage engine was split.
-     * New modules must use {@link #connect(String)}; legacy collectors continue to read and
-     * write {@code database/darkbook.db} until their data is migrated explicitly.
-     */
-    public static synchronized Connection getConnection() {
-        try {
-            if (legacyConnection == null || legacyConnection.isClosed()) {
-                Path databaseDirectory = AppPaths.fromWorkingDirectory().database("darkbook.db").getParent();
-                Files.createDirectories(databaseDirectory);
-                legacyConnection = DriverManager.getConnection(
-                        "jdbc:sqlite:" + databaseDirectory.resolve("darkbook.db"));
-                try (Statement statement = legacyConnection.createStatement()) {
-                    statement.execute("PRAGMA foreign_keys=ON");
-                    statement.execute("PRAGMA busy_timeout=5000");
-                    statement.execute("PRAGMA journal_mode=WAL");
-                }
-            }
-            return legacyConnection;
-        } catch (java.io.IOException | SQLException exception) {
-            throw new IllegalStateException("Unable to open the legacy Dark Book database", exception);
-        }
-    }
-
-    /** Closes only the compatibility connection used by the original scanner. */
-    public static synchronized void closeConnection() {
-        if (legacyConnection == null) return;
-        try {
-            legacyConnection.close();
-        } catch (SQLException ignored) {
-            // The application is already shutting down; there is no safe recovery action here.
-        } finally {
-            legacyConnection = null;
-        }
     }
 
     private void migrate(String database, String sql) throws SQLException {

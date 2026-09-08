@@ -1,6 +1,9 @@
 .scanner-hero { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); border-color: var(--color-border-strong); background: radial-gradient(circle at 80% 20%, var(--color-purple-soft), var(--color-panel) 45%); }
 .scanner-hero h2 { margin-bottom: var(--space-2); color: var(--color-purple); }
 .scanner-hero p { max-width: 42rem; margin: 0; color: var(--color-text-muted); font-size: var(--font-size-label); }
+.scanner-mode-row { display: flex; align-items: flex-end; }
+.scanner-mode-row .field { min-width: 16rem; }
+.scanner-mode-row select { font-family: var(--font-code); }
 .scanner-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
 .scanner-stat { padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-medium); background: var(--color-background-raised); }
 .scanner-stat span, .scanner-stat strong { display: block; }

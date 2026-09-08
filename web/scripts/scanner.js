@@ -3,6 +3,7 @@ import { listen, navigate, notify } from "./events.js";
 import { activateProgress, emptyState, escapeHtml, formatNumber, progressRow, setText, stateBadge, timeAgo } from "./components.js";
 
 let visibleEvents = [];
+let scannerConfig = {};
 
 export async function mount({ signal, actions }) {
   actions.innerHTML = '<span class="status-badge status-info">Playwright controlled by Java</span>';
@@ -12,12 +13,21 @@ export async function mount({ signal, actions }) {
     catch (error) { notify("Error del scanner", error.message, "error"); }
     finally { button.disabled = false; }
   }, { signal }));
+  const modeSelect = document.querySelector("#scanner-mode");
+  modeSelect?.addEventListener("change", async () => {
+    modeSelect.disabled = true;
+    try { scannerConfig = await api.saveSettings("scanner", { ...scannerConfig, mode: modeSelect.value }, signal); renderConfig(scannerConfig); notify("Scanner", `Modo cambiado a ${modeSelect.value}.`); }
+    catch (error) { notify("No se pudo cambiar el modo", error.message, "error"); modeSelect.value = scannerConfig.mode ?? "demo"; }
+    finally { modeSelect.disabled = false; }
+  }, { signal });
   document.querySelector("#scanner-open-settings").addEventListener("click", () => navigate("settings?section=scanner"), { signal });
   document.querySelector("#scanner-clear-logs").addEventListener("click", () => { visibleEvents = []; renderLogs(); }, { signal });
   listen("realtime:dashboard", event => { renderState(event.detail.scanner); renderVideo(event.detail.recentVideos[0]); }, signal);
   listen("realtime:events", event => { visibleEvents = event.detail.all.filter(item => item.source === "scanner" || item.type === "VideoCollected"); renderLogs(); }, signal);
   const [state, settings, videos, events] = await Promise.all([api.scanner(signal), api.settings(signal), api.videos(1, signal), api.events(100, signal)]);
-  renderState(state); renderConfig(settings.scanner); renderVideo(videos[0]);
+  scannerConfig = settings.scanner;
+  if (modeSelect) modeSelect.value = scannerConfig.mode ?? "demo";
+  renderState(state); renderConfig(scannerConfig); renderVideo(videos[0]);
   visibleEvents = events.filter(item => item.source === "scanner" || item.type === "VideoCollected"); renderLogs();
 }
 
@@ -25,6 +35,8 @@ function renderState(state) {
   setText("#scanner-source", state.source);
   const badge = document.querySelector("#scanner-state"); if (badge) badge.outerHTML = stateBadge(state.state).replace(">", ' id="scanner-state">');
   setText("#scanner-seen", formatNumber(state.videosSeen)); setText("#scanner-saved", formatNumber(state.videosSaved)); setText("#scanner-errors", formatNumber(state.errors)); setText("#scanner-time", `${state.activeSeconds}s`);
+  const banner = document.querySelector("#scanner-error-banner");
+  if (banner) { const message = state.lastError ?? ""; banner.hidden = message === ""; setText("#scanner-error", message); }
 }
 
 function renderConfig(config) {

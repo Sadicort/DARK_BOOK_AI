@@ -4,7 +4,7 @@
 
 - arranque de escritorio híbrido y API local;
 - configuración, migraciones, logs y eventos;
-- scanner demo y recolección de metadatos con Playwright;
+- scanner con modos `demo` (offline), `tiktok` (feed *Para Ti* en navegador real con reintentos y backoff) y `playwright` (listas de URLs públicas);
 - persistencia completa del pipeline de texto;
 - embeddings deterministas, búsqueda coseno, grafo y razonamiento con evidencia;
 - predicción base de viralidad y entrenador de centroides en Python;

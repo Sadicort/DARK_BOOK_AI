@@ -9,7 +9,7 @@ La implementación incluye:
 - ventana JavaFX con boot sequence y Dark Book OS;
 - API local uniforme, enlazada a `127.0.0.1`;
 - cuatro bases SQLite y migraciones idempotentes;
-- scanner offline verificable y fuente Playwright para listas explícitas de URLs públicas de TikTok;
+- scanner con tres modos: `demo` offline verificable, `tiktok` que navega el feed *Para Ti* en un navegador real, y `playwright` para listas explícitas de URLs públicas de TikTok;
 - dataset JSONL, notas Markdown, Obsidian, embeddings, memoria semántica y knowledge graph;
 - predicción explicable, razonamiento respaldado por memoria y auto-learning por eventos;
 - entrenador Python local que genera un clasificador por centroides;
@@ -44,7 +44,24 @@ Para validar y empaquetar:
 
 ## Scanner real
 
-El modo inicial es `demo` para probar todo el pipeline offline. Para usar Playwright, cambia `config/scanner.json` a `"mode":"playwright"` y añade URLs públicas en `seedUrls`. Instala Chromium una vez con la CLI de Playwright. La integración no inicia sesión, no evita CAPTCHA y no evade limitaciones del sitio.
+`config/scanner.json` → `mode` acepta tres valores (también editable desde la página Scanner o desde Settings › Scanner):
+
+| Modo | Qué hace |
+|---|---|
+| `demo` | Fuente offline determinista; valida el pipeline completo sin cuenta ni red. Es el valor inicial. |
+| `tiktok` | Abre el feed *Para Ti* en un navegador real, mira cada video un intervalo humano (`watchSecondsMin`–`watchSecondsMax`), extrae metadatos públicos y los envía al pipeline canónico. Omite anuncios y duplicados; ante un CAPTCHA espera `captchaPauseSeconds` y reintenta. |
+| `playwright` | Procesa solo la lista fija de URLs públicas de `seedUrls` (sin feed, sin scroll). |
+
+Ajustes del navegador en `config/playwright.json`:
+
+- `channel` (`"chrome"` por defecto): usa el Chrome instalado en el sistema. Si no existe, cae a Chromium.
+- `autoInstallBrowser` (`true`): si falta el Chromium de Playwright, lo instala en un proceso hijo la primera vez (necesita red esa vez).
+- `headless` (`false` por defecto para `tiktok`): el feed en headless dispara detección/CAPTCHA con frecuencia.
+- `userDataDir` (`"userdata"`): perfil persistente. El modo `tiktok` **no inicia sesión por sí mismo**; ejecuta una vez con `headless:false`, inicia sesión a mano en esa ventana y el perfil queda guardado para las siguientes ejecuciones.
+
+La integración no evita CAPTCHA ni evade limitaciones del sitio. Úsala solo sobre cuentas y contenido para los que tengas autorización.
+
+`ScannerManager` es resiliente: un fallo puntual de la fuente se reintenta con *backoff* exponencial y el scanner solo se detiene tras varios errores consecutivos; el último error se muestra en la página Scanner.
 
 ## Documentación
 

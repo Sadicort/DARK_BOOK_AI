@@ -25,7 +25,11 @@ public final class LocalApiServer implements AutoCloseable {
     public LocalApiServer(DarkBookRuntime runtime) { this.runtime = runtime; }
 
     public int start(String host, int port) throws IOException {
-        server = HttpServer.create(new InetSocketAddress(host, port), 0);
+        try {
+            server = HttpServer.create(new InetSocketAddress(host, port), 0);
+        } catch (java.net.BindException portInUse) {
+            server = HttpServer.create(new InetSocketAddress(host, 0), 0);
+        }
         server.createContext("/", this::handle);
         server.setExecutor(Executors.newVirtualThreadPerTaskExecutor()); server.start();
         runtime.events().publish("DashboardApiStarted", "dashboard", Map.of("port", server.getAddress().getPort()));

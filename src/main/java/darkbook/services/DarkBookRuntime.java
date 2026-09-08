@@ -2,6 +2,7 @@ package darkbook.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import darkbook.automation.PlaywrightVideoSource;
+import darkbook.automation.TikTokFeedVideoSource;
 import darkbook.config.ConfigurationManager;
 import darkbook.database.DatabaseManager;
 import darkbook.database.VideoRepository;
@@ -81,12 +82,26 @@ public final class DarkBookRuntime implements AutoCloseable {
 
     public void startScanner() throws Exception {
         JsonNode config = configuration.scanner();
+        JsonNode playwright = configuration.read("playwright.json");
         String mode = config.path("mode").asText("demo");
         VideoSource source;
-        if ("playwright".equalsIgnoreCase(mode)) {
+        if ("tiktok".equalsIgnoreCase(mode)) {
+            source = new TikTokFeedVideoSource(new TikTokFeedVideoSource.Options(
+                    playwright.path("headless").asBoolean(false),
+                    playwright.path("channel").asText("chrome"),
+                    paths.resolve(playwright.path("userDataDir").asText("userdata")),
+                    playwright.path("autoInstallBrowser").asBoolean(true),
+                    config.path("watchSecondsMin").asInt(8),
+                    config.path("watchSecondsMax").asInt(15),
+                    config.path("skipAds").asBoolean(true),
+                    config.path("skipDuplicates").asBoolean(true),
+                    config.path("humanBehavior").asBoolean(true),
+                    config.path("captchaPauseSeconds").asInt(30),
+                    config.path("maxConsecutiveSkips").asInt(40),
+                    playwright.path("timeoutMs").asInt(30000)), analyzer);
+        } else if ("playwright".equalsIgnoreCase(mode)) {
             List<String> urls = new ArrayList<>(); config.path("seedUrls").forEach(node -> urls.add(node.asText()));
-            boolean headless = configuration.read("playwright.json").path("headless").asBoolean(true);
-            source = new PlaywrightVideoSource(urls, analyzer, headless);
+            source = new PlaywrightVideoSource(urls, analyzer, playwright.path("headless").asBoolean(true));
         } else source = new DemoVideoSource(analyzer);
         scanner.start(source, config.path("intervalSeconds").asLong(8), config.path("maxVideos").asLong(100));
     }

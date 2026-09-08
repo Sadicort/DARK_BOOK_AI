@@ -76,7 +76,8 @@ public final class ConfigurationManager {
                 {"version":"1.0.0","language":"es","api":{"host":"127.0.0.1","port":17321},"createdAt":"%s"}
                 """.formatted(Instant.now()));
         files.put("scanner.json", """
-                {"mode":"demo","intervalSeconds":8,"maxVideos":100,"durationHours":10,"infinite":false,"language":"es","region":"DO","seedUrls":[]}
+                {"mode":"demo","intervalSeconds":8,"maxVideos":100,"durationHours":10,"infinite":false,"language":"es","region":"DO","seedUrls":[],
+                 "watchSecondsMin":8,"watchSecondsMax":15,"skipAds":true,"skipDuplicates":true,"humanBehavior":true,"captchaPauseSeconds":30,"maxConsecutiveSkips":40}
                 """);
         files.put("ui.json", """
                 {"theme":"dark-book-purple","animations":true,"reducedMotion":false,"compactMode":false}
@@ -91,7 +92,7 @@ public final class ConfigurationManager {
                 {"executable":"python","trainerScript":"training/trainer.py","timeoutMinutes":30}
                 """);
         files.put("playwright.json", """
-                {"headless":true,"timeoutMs":30000,"proxy":"","respectRateLimits":true}
+                {"headless":false,"timeoutMs":30000,"proxy":"","respectRateLimits":true,"channel":"chrome","userDataDir":"userdata","autoInstallBrowser":true}
                 """);
         return files;
     }

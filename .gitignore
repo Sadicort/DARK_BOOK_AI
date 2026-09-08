@@ -13,6 +13,12 @@ models/**/*.onnx
 datasets/raw/*.jsonl
 datasets/processed/*.jsonl
 
+# Generated knowledge output (kept only as folder scaffolding + README)
+knowledge/**/*.md
+!knowledge/README.md
+obsidian/**/*.md
+!obsidian/README.md
+
 # IntelliJ IDEA
 .idea/
 .obsidian/

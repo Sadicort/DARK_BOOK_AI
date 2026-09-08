@@ -1,7 +1,6 @@
 package darkbook.database;
 
 import darkbook.models.VideoRecord;
-import darkbook.models.VideoData;
 import darkbook.utils.Json;
 
 import java.sql.Connection;
@@ -17,13 +16,7 @@ public final class VideoRepository {
 
     public VideoRepository(DatabaseManager databases) { this.databases = databases; }
 
-    /** Compatibility constructor for the original scanner and its legacy database schema. */
-    public VideoRepository() { this.databases = null; }
-
     public void save(VideoRecord video) throws SQLException {
-        if (databases == null) {
-            throw new IllegalStateException("The canonical repository requires DatabaseManager");
-        }
         String sql = """
                 INSERT INTO videos(id,platform,url,description,author,likes,comments,shares,category,emotion,hashtags_json,audio,collected_at)
                 VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
@@ -39,37 +32,6 @@ public final class VideoRepository {
             statement.setString(9, video.category()); statement.setString(10, video.emotion());
             statement.setString(11, Json.stringify(video.hashtags())); statement.setString(12, video.audio());
             statement.setString(13, video.collectedAt().toString()); statement.executeUpdate();
-        }
-    }
-
-    /**
-     * Persists records emitted by the original Playwright scanner without mixing its schema
-     * with the canonical {@code videos.db}. New collectors must emit {@link VideoRecord}.
-     */
-    public void save(VideoData video) {
-        String sql = """
-                INSERT OR IGNORE INTO videos(
-                    url, username, display_name, description, likes, comments, shares,
-                    favorites, audio, screenshot, watch_time, category, collected_at
-                ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
-                """;
-        try (var statement = DatabaseManager.getConnection().prepareStatement(sql)) {
-            statement.setString(1, video.getVideoUrl());
-            statement.setString(2, video.getUsername());
-            statement.setString(3, video.getDisplayName());
-            statement.setString(4, video.getDescription());
-            statement.setString(5, video.getLikes());
-            statement.setString(6, video.getComments());
-            statement.setString(7, video.getShares());
-            statement.setString(8, video.getFavorites());
-            statement.setString(9, video.getAudioName());
-            statement.setString(10, video.getScreenshotPath());
-            statement.setInt(11, video.getWatchTime());
-            statement.setString(12, video.getCategory());
-            statement.setString(13, video.getCollectedAt().toString());
-            statement.executeUpdate();
-        } catch (SQLException exception) {
-            throw new IllegalStateException("Unable to persist a legacy scanner video", exception);
         }
     }
 

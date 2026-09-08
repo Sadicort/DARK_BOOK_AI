@@ -1,1 +1,1 @@
-{"headless":true,"timeoutMs":30000,"proxy":"","respectRateLimits":true}
+{"headless":false,"timeoutMs":30000,"proxy":"","respectRateLimits":true,"channel":"chrome","userDataDir":"userdata","autoInstallBrowser":true}

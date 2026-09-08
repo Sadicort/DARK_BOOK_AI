@@ -19,9 +19,11 @@ public final class AppPaths {
     }
 
     /**
-     * Finds the project root when the packaged executable is launched from its app-image
-     * directory. This prevents runtime databases and configuration from being created inside
-     * {@code build/package/DarkBookAI} after a folder migration.
+     * Resolves the data root. During development it is the project checkout (so databases and
+     * configuration live next to the sources). When the packaged executable runs from an
+     * installed location without the project tree, it falls back to a per-user writable
+     * directory instead of the current working directory, which may be read-only
+     * (for example {@code C:\Program Files\...}).
      */
     private static Path discoverProjectRoot() {
         Path workingDirectory = Path.of("").toAbsolutePath().normalize();
@@ -31,7 +33,26 @@ public final class AppPaths {
                 return candidate;
             }
         }
-        return workingDirectory;
+        return userDataDirectory().orElse(workingDirectory);
+    }
+
+    private static java.util.Optional<Path> userDataDirectory() {
+        String os = System.getProperty("os.name", "").toLowerCase(java.util.Locale.ROOT);
+        String base;
+        if (os.contains("win")) {
+            base = System.getenv("LOCALAPPDATA");
+        } else if (os.contains("mac")) {
+            String home = System.getProperty("user.home");
+            base = home == null ? null : home + "/Library/Application Support";
+        } else {
+            base = System.getenv("XDG_DATA_HOME");
+            if (base == null || base.isBlank()) {
+                String home = System.getProperty("user.home");
+                base = home == null ? null : home + "/.local/share";
+            }
+        }
+        if (base == null || base.isBlank()) return java.util.Optional.empty();
+        return java.util.Optional.of(Path.of(base, "DarkBookAI"));
     }
 
     public void initialize() throws IOException {
