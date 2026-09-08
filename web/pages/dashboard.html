@@ -1,0 +1,14 @@
+<section class="content-grid dashboard-metrics" aria-label="Métricas principales">
+  <article class="card metric-card metric-purple"><div class="metric-card-head"><span>Videos analizados</span><span>◈</span></div><strong id="metric-videos">—</strong><div id="metric-videos-detail" class="metric-detail">Cargando historial…</div></article>
+  <article class="card metric-card metric-blue"><div class="metric-card-head"><span>Memoria IA</span><span>◫</span></div><strong id="metric-memory">—</strong><div class="metric-detail">Recuerdos persistentes</div></article>
+  <article class="card metric-card metric-green"><div class="metric-card-head"><span>Aprendizaje</span><span>◇</span></div><strong id="metric-cycles">—</strong><div class="metric-detail">Ciclos completados</div></article>
+  <article class="card metric-card metric-orange"><div class="metric-card-head"><span>Scanner</span><span>⌁</span></div><strong id="metric-scanner">—</strong><div id="metric-scanner-detail" class="metric-detail">Esperando estado…</div></article>
+</section>
+<section class="content-grid grid-2 section-gap">
+  <article class="card"><header class="card-header"><div><h2>Estado general IA</h2><p>Motores y servicios internos</p></div><span class="status-badge status-success">Live</span></header><div id="dashboard-engines" class="engine-grid"></div></article>
+  <article class="card"><header class="card-header"><div><h2>Recursos del sistema</h2><p>Telemetría de Java y del equipo</p></div><span class="status-badge status-info">Performance</span></header><div id="dashboard-resources" class="resource-list"></div></article>
+  <article class="card"><header class="card-header"><div><h2>Actividad reciente</h2><p>Timeline de eventos globales</p></div><button class="button button-quiet" id="dashboard-events-all">Ver historial</button></header><div id="dashboard-timeline" class="timeline"></div></article>
+  <article class="card"><header class="card-header"><div><h2>Tendencias detectadas</h2><p>Categorías en videos recientes</p></div><span class="status-badge">Local</span></header><div id="dashboard-trends" class="trend-list"></div></article>
+  <article class="card span-2"><header class="card-header"><div><h2>Scanner activo</h2><p>Último video incorporado al conocimiento</p></div><span id="dashboard-scanner-badge" class="status-badge">Stopped</span></header><div id="dashboard-current-video" class="video-live"></div></article>
+</section>
+

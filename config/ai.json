@@ -1,0 +1,1 @@
+{"embeddingDimension":64,"learningRate":0.01,"batchSize":16,"epochs":10,"activeModel":"darkbook-centroid-v1","autoLearn":true}

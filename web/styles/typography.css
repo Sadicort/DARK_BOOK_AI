@@ -1,0 +1,14 @@
+@font-face { font-family: Inter; src: local("Inter"); font-display: swap; }
+@font-face { font-family: Orbitron; src: local("Orbitron"); font-display: swap; }
+@font-face { font-family: "JetBrains Mono"; src: local("JetBrains Mono"); font-display: swap; }
+html { font-size: 100%; }
+body, button, input, select, textarea { font-family: var(--font-interface); font-size: var(--font-size-body); }
+h1, h2, h3, p { margin-block-start: 0; }
+h1 { font-family: var(--font-technology); font-size: var(--font-size-title); line-height: 1.2; letter-spacing: 0.035em; }
+h2 { font-family: var(--font-technology); font-size: 0.875rem; line-height: 1.35; letter-spacing: 0.08em; text-transform: uppercase; }
+h3 { font-size: 0.95rem; line-height: 1.4; }
+p { line-height: var(--line-body); }
+code, pre, kbd, .mono { font-family: var(--font-code); }
+.eyebrow { color: var(--color-purple); font-family: var(--font-technology); font-size: var(--font-size-meta); letter-spacing: 0.12em; text-transform: uppercase; }
+.muted { color: var(--color-text-muted); }
+

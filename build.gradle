@@ -1,0 +1,81 @@
+plugins {
+    id 'application'
+    id 'idea'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+group = 'darkbook'
+version = '1.0.0'
+
+repositories { mavenCentral() }
+
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(21) }
+}
+
+sourceSets {
+    main {
+        java {
+            // Only the canonical Dark Book namespace is part of the application build.
+            include 'darkbook/**'
+        }
+        resources { srcDirs = ['src/main/resources'] }
+    }
+}
+
+javafx {
+    version = '21.0.6'
+    modules = ['javafx.controls', 'javafx.web']
+}
+
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.3'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.3'
+    implementation 'org.xerial:sqlite-jdbc:3.50.3.0'
+    implementation 'com.microsoft.playwright:playwright:1.55.0'
+    implementation 'org.slf4j:slf4j-api:2.0.17'
+    runtimeOnly 'org.slf4j:slf4j-simple:2.0.17'
+    testImplementation platform('org.junit:junit-bom:5.12.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('processResources') {
+    from('web') { into 'web' }
+}
+
+application {
+    mainClass = 'darkbook.DarkBookLauncher'
+    applicationName = 'DarkBookAI'
+    applicationDefaultJvmArgs = ['-Dfile.encoding=UTF-8']
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+}
+
+tasks.named('test') { useJUnitPlatform() }
+
+tasks.register('runHeadless', JavaExec) {
+    group = 'application'
+    description = 'Starts the Dark Book local API without the desktop window.'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'darkbook.DarkBookHeadless'
+}
+
+tasks.register('packageDarkBook', Exec) {
+    group = 'distribution'
+    description = 'Creates a Windows application image using the JDK 21 jpackage tool.'
+    dependsOn tasks.named('installDist')
+    def javaHome = javaToolchains.launcherFor(java.toolchain).map { it.metadata.installationPath.asFile }
+    doFirst {
+        delete layout.buildDirectory.dir('package/DarkBookAI')
+        def appDir = layout.buildDirectory.dir('install/DarkBookAI/lib').get().asFile
+        commandLine new File(javaHome.get(), 'bin/jpackage.exe'),
+                '--type', 'app-image', '--name', 'DarkBookAI', '--input', appDir,
+                '--main-jar', "DARK_BOOK_AI-${project.version}.jar",
+                '--main-class', application.mainClass.get(),
+                '--dest', layout.buildDirectory.dir('package').get().asFile
+    }
+}

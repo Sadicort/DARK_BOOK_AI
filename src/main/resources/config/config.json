@@ -1,0 +1,46 @@
+{
+  "browser": {
+    "engine": "chromium",
+    "headless": false,
+    "slowMo": 150,
+    "width": 1280,
+    "height": 720,
+    "stealth": true
+  },
+  "scanner": {
+    "hours": 10,
+    "videos_limit": 1500,
+    "language": "es",
+    "category": "all"
+  },
+  "collector": {
+    "save_comments": true,
+    "save_audio": true,
+    "save_thumbnail": true
+  },
+  "reports": {
+    "auto_generate": true,
+    "format": "pdf"
+  },
+  "debug": {
+    "enabled": true,
+    "show_status": true,
+    "screenshots": false
+  },
+  "behavior": {
+    "auto_play": true,
+    "human_mode": true,
+    "random_pause": true,
+    "scroll_variation": true
+  },
+  "intelligence": {
+    "skip_ads": true,
+    "skip_duplicates": true,
+    "auto_recovery": true,
+    "captcha_pause": true
+  },
+  "logging": {
+    "save_logs": true,
+    "level": "INFO"
+  }
+}

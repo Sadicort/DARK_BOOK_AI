@@ -1,0 +1,12 @@
+<section class="card"><header class="card-header"><div><h2>Buscador semántico</h2><p>Recupera conocimiento por similitud, no solo por coincidencia exacta</p></div><span class="status-badge status-success">Memory V2.0</span></header><div class="memory-search"><div class="search-field"><span>⌕</span><input id="memory-query" type="search" placeholder="Buscar conceptos, personas, hashtags o recuerdos…"><button id="memory-clear" aria-label="Limpiar">×</button></div><button id="memory-search" class="button button-primary">Buscar memoria</button></div></section>
+<section class="content-grid memory-types section-gap">
+  <article class="card memory-type"><span class="eyebrow">EPISÓDICA</span><strong id="episodic-count">—</strong><p class="muted">Videos y eventos observados con su momento de recolección.</p></article>
+  <article class="card memory-type"><span class="eyebrow">SEMÁNTICA</span><strong id="semantic-count">—</strong><p class="muted">Conceptos relacionados mediante embeddings y similitud coseno.</p></article>
+  <article class="card memory-type"><span class="eyebrow">TEMPORAL</span><strong id="working-count">SESSION</strong><p class="muted">Contexto activo utilizado por el motor de razonamiento.</p></article>
+</section>
+<section class="content-grid grid-2 section-gap">
+  <article class="card"><header class="card-header"><div><h2>Resultados relacionados</h2><p id="memory-result-caption">Esperando una consulta</p></div></header><div id="memory-results" class="resource-list"></div></article>
+  <article class="card"><header class="card-header"><div><h2>Timeline de memoria</h2><p>Recuerdos más recientes</p></div></header><div id="memory-timeline" class="timeline"></div></article>
+  <article class="card span-2"><header class="card-header"><div><h2>Reasoning Inspector</h2><p>Respuesta limitada a evidencia almacenada en Dark Book</p></div></header><div class="memory-search"><textarea id="reasoning-question" class="textarea" placeholder="¿Qué ha aprendido Dark Book sobre…?"></textarea><button id="reasoning-run" class="button button-primary">Razonar</button></div><div id="reasoning-result" class="section-gap"></div></article>
+</section>
+

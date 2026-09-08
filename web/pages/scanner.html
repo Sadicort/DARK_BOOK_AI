@@ -1,0 +1,12 @@
+<section class="card scanner-hero">
+  <div><span class="eyebrow">AUTOMATION ENGINE</span><h2>TikTok Scanner V2</h2><p>Controla la recolección autorizada, observa el video actual y sigue cada evento del pipeline en tiempo real.</p></div>
+  <div class="button-row"><button class="button button-primary" data-scanner-action="start">Iniciar</button><button class="button" data-scanner-action="pause">Pausar</button><button class="button" data-scanner-action="resume">Continuar</button><button class="button button-danger" data-scanner-action="stop">Detener</button></div>
+</section>
+<section class="content-grid grid-2 section-gap">
+  <article class="card"><header class="card-header"><div><h2>Estado del scanner</h2><p id="scanner-source">Sin fuente activa</p></div><span id="scanner-state" class="status-badge">Stopped</span></header><div class="scanner-stat-grid"><div class="scanner-stat"><span>Vistos</span><strong id="scanner-seen">0</strong></div><div class="scanner-stat"><span>Guardados</span><strong id="scanner-saved">0</strong></div><div class="scanner-stat"><span>Errores</span><strong id="scanner-errors">0</strong></div><div class="scanner-stat"><span>Tiempo</span><strong id="scanner-time">0s</strong></div></div></article>
+  <article class="card"><header class="card-header"><div><h2>Configuración activa</h2><p>Valores persistentes de scanner.json</p></div><button class="button" id="scanner-open-settings">Editar</button></header><div id="scanner-config" class="scanner-config"></div></article>
+  <article class="card"><header class="card-header"><div><h2>Video actual</h2><p>Último contenido guardado</p></div><span class="status-badge status-info">AI Enriched</span></header><div id="scanner-current-video" class="video-live"></div></article>
+  <article class="card"><header class="card-header"><div><h2>Score IA</h2><p>Señales disponibles del contenido</p></div><span class="status-badge status-warning">Baseline</span></header><div id="scanner-score" class="resource-list"></div></article>
+  <article class="card span-2"><header class="card-header"><div><h2>Logs del scanner</h2><p>Eventos recibidos sin recargar la página</p></div><button class="button button-quiet" id="scanner-clear-logs">Limpiar vista</button></header><div id="scanner-log" class="scanner-log"></div></article>
+</section>
+
