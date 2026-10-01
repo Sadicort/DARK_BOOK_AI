@@ -16,7 +16,7 @@ La implementación incluye:
 - Dashboard, Scanner, Intelligence, Memory, Graph, Datasets, Models, Analytics, Terminal y Settings;
 - contratos para Vision y Voice. Estos motores validan entradas, pero necesitan modelos Python para OCR, transcripción y clasificación reales.
 
-El proyecto no utiliza Minecraft Forge, ForgeGradle ni código de mods. Todo el backend se desarrolla con Java 21 y Gradle.
+Todo el backend se desarrolla con Java 21 y Gradle.
 
 ## Requisitos
 
